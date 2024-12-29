@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Runtime data
+visitor-stats.json
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Logs
+logs/
+*.log
+
+# Security and sensitive files
+nginx/*.conf
+deploy/secrets/
+*.pem
+*.key
+*.crt
+*.cert
+
+# IDE / Editor directories
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Production build files
+dist/
+build/
+
+# Local development files
+*.local
+*.local.* 

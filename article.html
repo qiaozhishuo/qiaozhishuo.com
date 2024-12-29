@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article - Loading...</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/markdown.css">
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+    <script src="js/i18n.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-links">
+            <a href="/" class="nav-link">
+                <i class="fas fa-arrow-left"></i> <span data-i18n="nav.back">Back to Home</span>
+            </a>
+        </div>
+        <button id="langSwitch" class="lang-switch">
+            <i class="fas fa-globe"></i>
+            <span class="current-lang">EN</span>
+        </button>
+    </nav>
+
+    <main>
+        <article id="articleContent" class="article-container markdown-content">
+            <div class="loading">Loading article...</div>
+        </article>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="ai-decoration-footer"></div>
+            <p>
+                <span data-i18n="footer.name">QiaoZhiShuo</span> © 2024 
+                <span data-i18n="footer.rights">All rights reserved.</span>
+            </p>
+            <div class="social-links">
+                <a href="https://github.com/qiaozhishuo" target="_blank" class="social-link" title="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://x.com/qiaozhishuo" target="_blank" class="social-link" title="X (Twitter)">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="https://tiktok.com/@qiaozhishuo" target="_blank" class="social-link" title="TikTok">
+                    <i class="fab fa-tiktok"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const type = urlParams.get('type');
+            const id = urlParams.get('id');
+            const articleContainer = document.getElementById('articleContent');
+
+            if (!type || !id) {
+                articleContainer.innerHTML = '<div class="error">Article not found</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`/article/${type}/${id}`);
+                if (!response.ok) {
+                    throw new Error('Article not found');
+                }
+
+                const article = await response.json();
+                const md = window.markdownit({
+                    html: true,
+                    linkify: true,
+                    typographer: true
+                });
+
+                // Update page title
+                document.title = article.title;
+
+                // Render article
+                articleContainer.innerHTML = `
+                    <h1>${article.title}</h1>
+                    <div class="article-meta">
+                        <span class="date"><i class="far fa-calendar"></i> ${new Date(article.date).toLocaleDateString()}</span>
+                        ${article.author ? `<span class="author"><i class="far fa-user"></i> ${article.author}</span>` : ''}
+                        ${article.tags ? `
+                            <span class="tags">
+                                <i class="fas fa-tags"></i> 
+                                ${article.tags.map(tag => `<span class="tag">${tag}</span>`).join(' ')}
+                            </span>
+                        ` : ''}
+                        ${article.translations ? `
+                            <span class="translations">
+                                ${Object.entries(article.translations).map(([lang, translatedId]) => `
+                                    <a href="?type=${type}&id=${translatedId}" class="translation-link">
+                                        ${lang.toUpperCase()}
+                                    </a>
+                                `).join(' ')}
+                            </span>
+                        ` : ''}
+                    </div>
+                    <div class="article-content">
+                        ${md.render(article.content)}
+                    </div>
+                `;
+
+                // Initialize language switcher after content is loaded
+                if (window.i18n) {
+                    window.i18n.init();
+                }
+            } catch (error) {
+                console.error('Error loading article:', error);
+                articleContainer.innerHTML = '<div class="error">Error loading article</div>';
+            }
+        });
+    </script>
+</body>
+</html> 

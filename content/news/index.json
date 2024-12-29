@@ -1,0 +1,46 @@
+[
+    {
+        "id": "tesla-news-2024-dec",
+        "title": "Tesla News - December 2024",
+        "description": "Top 50 Tesla news stories from December 2024",
+        "file": "Tesla-news-2024-Dec.md",
+        "date": "2024-12",
+        "category": "tesla",
+        "translations": {
+            "zh": "tesla-news-2024-dec-zh"
+        }
+    },
+    {
+        "id": "tesla-news-2024-dec-zh",
+        "title": "特斯拉新闻 - 2024年12月",
+        "description": "2024年12月特斯拉50大新闻",
+        "file": "Tesla-news-2024-Dec-zh.md",
+        "date": "2024-12",
+        "category": "tesla",
+        "translations": {
+            "en": "tesla-news-2024-dec"
+        }
+    },
+    {
+        "id": "ai-news-2024-dec",
+        "title": "AI News - December 2024",
+        "description": "Top 50 AI news stories from December 2024",
+        "file": "AI-news-2024-Dec.md",
+        "date": "2024-12",
+        "category": "ai",
+        "translations": {
+            "zh": "ai-news-2024-dec-zh"
+        }
+    },
+    {
+        "id": "ai-news-2024-dec-zh",
+        "title": "人工智能新闻 - 2024年12月",
+        "description": "2024年12月人工智能50大新闻",
+        "file": "AI-news-2024-Dec-zh.md",
+        "date": "2024-12",
+        "category": "ai",
+        "translations": {
+            "en": "ai-news-2024-dec"
+        }
+    }
+]
