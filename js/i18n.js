@@ -48,6 +48,11 @@ const translations = {
             totalVisitors: 'Total Visitors',
             todayVisitors: 'Today',
             monthVisitors: 'This Month'
+        },
+        stats: {
+            total: "Total Visits",
+            today: "Today",
+            month: "This Month"
         }
     },
     zh: {
@@ -98,6 +103,11 @@ const translations = {
             totalVisitors: '总访问量',
             todayVisitors: '今日',
             monthVisitors: '本月'
+        },
+        stats: {
+            total: "总访问量",
+            today: "今日",
+            month: "本月"
         }
     }
 };

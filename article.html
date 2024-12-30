@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/markdown.css">
-    <script src="https://cdn.jsdelivr.net/npm/markdown-it@13.0.1/dist/markdown-it.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/22.5.0/i18next.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
     <script src="js/i18n.js"></script>
 </head>
 <body>
@@ -17,10 +18,12 @@
                 <i class="fas fa-arrow-left"></i> <span data-i18n="nav.back">Back to Home</span>
             </a>
         </div>
-        <button id="langSwitch" class="lang-switch">
-            <i class="fas fa-globe"></i>
-            <span class="current-lang">EN</span>
-        </button>
+        <div class="nav-right">
+            <button id="langSwitch" class="lang-switch">
+                <i class="fas fa-globe"></i>
+                <span class="current-lang">EN</span>
+            </button>
+        </div>
     </nav>
 
     <main>
@@ -51,7 +54,14 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
+        // Wait for all required libraries to load
+        window.addEventListener('load', async () => {
+            if (!window.markdownit || !window.i18next) {
+                console.error('Required libraries not loaded');
+                document.getElementById('articleContent').innerHTML = '<div class="error">Error: Required libraries not loaded</div>';
+                return;
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
             const type = urlParams.get('type');
             const id = urlParams.get('id');
@@ -63,12 +73,16 @@
             }
 
             try {
+                console.log('Fetching article:', type, id);
                 const response = await fetch(`/article/${type}/${id}`);
+                
                 if (!response.ok) {
-                    throw new Error('Article not found');
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const article = await response.json();
+                console.log('Article data:', article);
+
                 const md = window.markdownit({
                     html: true,
                     linkify: true,
@@ -78,18 +92,17 @@
                 // Update page title
                 document.title = article.title;
 
+                // Format date
+                const date = new Date(article.date + '-01').toLocaleDateString(
+                    document.documentElement.lang === 'zh' ? 'zh-CN' : 'en-US',
+                    { year: 'numeric', month: 'long' }
+                );
+
                 // Render article
                 articleContainer.innerHTML = `
                     <h1>${article.title}</h1>
                     <div class="article-meta">
-                        <span class="date"><i class="far fa-calendar"></i> ${new Date(article.date).toLocaleDateString()}</span>
-                        ${article.author ? `<span class="author"><i class="far fa-user"></i> ${article.author}</span>` : ''}
-                        ${article.tags ? `
-                            <span class="tags">
-                                <i class="fas fa-tags"></i> 
-                                ${article.tags.map(tag => `<span class="tag">${tag}</span>`).join(' ')}
-                            </span>
-                        ` : ''}
+                        <span class="date"><i class="far fa-calendar"></i> ${date}</span>
                         ${article.translations ? `
                             <span class="translations">
                                 ${Object.entries(article.translations).map(([lang, translatedId]) => `
@@ -111,7 +124,7 @@
                 }
             } catch (error) {
                 console.error('Error loading article:', error);
-                articleContainer.innerHTML = '<div class="error">Error loading article</div>';
+                articleContainer.innerHTML = `<div class="error">Error loading article: ${error.message}</div>`;
             }
         });
     </script>

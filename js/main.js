@@ -252,40 +252,24 @@ document.querySelectorAll('nav a').forEach(link => {
 async function updateVisitorCount() {
     try {
         const response = await fetch('/visitor-count');
+        if (!response.ok) {
+            throw new Error('Failed to update visitor count');
+        }
         const data = await response.json();
         
-        const lang = document.documentElement.lang || 'en';
-        
-        // Update total visitors
-        const totalElement = document.getElementById('totalVisitors');
-        if (totalElement) {
-            totalElement.textContent = data.total;
-        }
-        
-        // Update today's visitors
-        const todayElement = document.getElementById('todayVisitors');
-        if (todayElement) {
-            todayElement.textContent = data.today;
-        }
-        
-        // Update this month's visitors
-        const monthElement = document.getElementById('monthVisitors');
-        if (monthElement) {
-            monthElement.textContent = data.thisMonth;
-        }
+        // Update the display
+        document.getElementById('totalVisits').textContent = data.total;
+        document.getElementById('todayVisits').textContent = data.today;
+        document.getElementById('monthVisits').textContent = data.thisMonth;
     } catch (error) {
         console.error('Error updating visitor count:', error);
-        ['totalVisitors', 'todayVisitors', 'monthVisitors'].forEach(id => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.textContent = '-';
-            }
-        });
     }
 }
 
-// Update visitor count on page load
-document.addEventListener('DOMContentLoaded', updateVisitorCount);
+// Update visitor count when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    updateVisitorCount();
+});
 
 // Update visitor count periodically
 setInterval(updateVisitorCount, 60000); // Update every minute 
