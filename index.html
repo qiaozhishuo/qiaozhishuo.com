@@ -3,186 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Powered Personal Website</title>
+    <title>QiaoZhiShuo - AI & Technology</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/modern.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/i18next/22.5.0/i18next.min.js"></script>
     <script src="js/i18n.js"></script>
-    <script src="js/main.js" defer></script>
 </head>
 <body>
     <nav class="navbar">
+        <a href="/" class="logo-link">
+            <img src="images/logo.png" alt="QiaoZhiShuo" class="logo">
+        </a>
         <div class="nav-links">
-            <a href="#" class="nav-link" data-i18n="nav.home">
-                <i class="fas fa-home"></i> Home
-            </a>
-            <a href="#news" class="nav-link" data-i18n="nav.news">
-                <i class="fas fa-newspaper"></i> News
-            </a>
-            <!-- Temporarily hidden
-            <a href="#blog" class="nav-link" data-i18n="nav.blog">
-                <i class="fas fa-blog"></i> Blog
-            </a>
-            <a href="#media" class="nav-link" data-i18n="nav.media">
-                <i class="fas fa-photo-video"></i> Media
-            </a>
-            -->
-            <a href="#contact" class="nav-link" data-i18n="nav.contact">
-                <i class="fas fa-envelope"></i> Contact
-            </a>
-        </div>
-        <div class="nav-right">
-            <button id="langSwitch" class="lang-switch">
+            <a href="#news" class="nav-link" data-i18n="nav.news">News</a>
+            <a href="#blog" class="nav-link" data-i18n="nav.blog">Blog</a>
+            <a href="#media" class="nav-link" data-i18n="nav.media">Media</a>
+            <a href="#contact" class="nav-link" data-i18n="nav.contact">Contact</a>
+            <button id="langSwitch" class="nav-link">
                 <i class="fas fa-globe"></i>
                 <span class="current-lang">EN</span>
             </button>
         </div>
     </nav>
 
-    <main>
-        <section id="home" class="section">
-            <div class="ai-decoration">
-                <div class="ai-circle"></div>
-                <div class="ai-line"></div>
-            </div>
-            <h1 data-i18n="home.title">AI Enthusiast & Tech Visionary</h1>
-            <div class="identity-tags">
-                <span class="tag" data-i18n="home.tag1">AI Enthusiast</span>
-                <span class="tag" data-i18n="home.tag2">Tech Geek</span>
-                <span class="tag" data-i18n="home.tag3">TSLA Holder</span>
-                <span class="tag" data-i18n="home.tag4">Tesla Owner</span>
-            </div>
-            <p class="mission-statement" data-i18n="home.description">Shaping Tomorrow's World with AI, ML & Data – Where Innovation Knows No Bounds.</p>
-            <p class="site-purpose" data-i18n="home.purpose">Dedicated to sharing insights on AI advancement, exploring how artificial intelligence can enhance human potential, and following Tesla's revolutionary journey in shaping our future.</p>
-            <div class="ai-grid">
-                <div class="ai-feature">
-                    <i class="fas fa-robot"></i>
-                    <h3 data-i18n="home.feature1.title">AI Insights</h3>
-                    <p data-i18n="home.feature1.desc">Exploring the latest in AI technology and its impact on our future</p>
-                </div>
-                <div class="ai-feature">
-                    <i class="fas fa-brain"></i>
-                    <h3 data-i18n="home.feature2.title">Personal Growth</h3>
-                    <p data-i18n="home.feature2.desc">Leveraging AI to enhance human potential and capabilities</p>
-                </div>
-                <div class="ai-feature">
-                    <i class="fas fa-car"></i>
-                    <h3 data-i18n="home.feature3.title">Tesla Journey</h3>
-                    <p data-i18n="home.feature3.desc">Following Tesla's innovation and technological breakthroughs</p>
-                </div>
-            </div>
-        </section>
+    <section class="hero" style="background-image: url('images/hero-bg.jpg')">
+        <div class="hero-content animate-in">
+            <h1 class="hero-title" data-i18n="home.title">AI Enthusiast & Tech Visionary</h1>
+            <p class="hero-subtitle" data-i18n="home.description">Shaping Tomorrow's World with AI – Where Innovation Knows No Bounds.</p>
+        </div>
+    </section>
 
-        <section id="news" class="section">
-            <div class="section-header">
-                <h2 data-i18n="news.title">Latest News</h2>
-                <div class="ai-accent"></div>
+    <section id="news" class="section">
+        <div class="section-content">
+            <h2 class="section-title" data-i18n="news.title">Latest News</h2>
+            <div class="news-grid" id="newsGrid">
+                <!-- News items will be loaded dynamically -->
             </div>
-            <div id="newsGrid" class="content-grid">
-                <div class="loading">Loading news articles...</div>
-            </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Temporarily hidden
-        <section id="blog" class="section">
-            <div class="section-header">
-                <h2 data-i18n="blog.title">Blog</h2>
-                <div class="ai-accent"></div>
+    <section id="blog" class="section" style="background-image: url('images/blog-bg.jpg')">
+        <div class="section-content">
+            <h2 class="section-title" data-i18n="blog.title">Blog Posts</h2>
+            <div class="news-grid" id="blogGrid">
+                <!-- Blog posts will be loaded dynamically -->
             </div>
-            <div id="blogGrid"></div>
-        </section>
+        </div>
+    </section>
 
-        <section id="media" class="section">
-            <div class="section-header">
-                <h2 data-i18n="media.title">Media</h2>
-                <div class="ai-accent"></div>
+    <section id="media" class="section">
+        <div class="section-content">
+            <h2 class="section-title" data-i18n="media.title">Media Gallery</h2>
+            <div class="media-grid" id="mediaGrid">
+                <!-- Media items will be loaded dynamically -->
             </div>
-            <div id="mediaGrid"></div>
-        </section>
-        -->
+        </div>
+    </section>
 
-        <section id="contact" class="section">
-            <div class="section-header">
-                <h2 data-i18n="contact.title">Follow & Connect</h2>
-                <div class="ai-accent"></div>
-            </div>
-            <div class="social-grid">
-                <a href="https://x.com/qiaozhishuo" target="_blank" class="social-card">
-                    <i class="fab fa-twitter"></i>
-                    <h3>X (Twitter)</h3>
-                    <p>@qiaozhishuo</p>
-                </a>
-                <a href="https://github.com/qiaozhishuo" target="_blank" class="social-card">
-                    <i class="fab fa-github"></i>
-                    <h3>GitHub</h3>
-                    <p>@qiaozhishuo</p>
-                </a>
-                <a href="https://tiktok.com/@qiaozhishuo" target="_blank" class="social-card">
-                    <i class="fab fa-tiktok"></i>
-                    <h3>TikTok</h3>
-                    <p>@qiaozhishuo</p>
-                </a>
-                <a href="https://www.youtube.com/@qiaozhishuo" target="_blank" class="social-card">
-                    <i class="fab fa-youtube"></i>
-                    <h3>YouTube</h3>
-                    <p>@qiaozhishuo</p>
-                </a>
-
-                <div class="social-card">
-                    <i class="fas fa-heart"></i>
-                    <h3>小红书</h3>
-                    <p>乔智说</p>
-                </div>
-                <div class="social-card">
-                    <i class="fas fa-video"></i>
-                    <h3>视频号</h3>
-                    <p>乔智说</p>
-                </div>
-                <div class="social-card">
-                    <i class="fas fa-music"></i>
-                    <h3>抖音</h3>
-                    <p>乔智说</p>
-                </div>
-                <div class="social-card">
-                    <i class="fas fa-play-circle"></i>
-                    <h3>哔哩哔哩</h3>
-                    <p>乔智说</p>
-                </div>
-                <div class="social-card">
-                    <i class="fas fa-envelope"></i>
-                    <h3>Email</h3>
-                    <p>tsla100times@outlook.com</p>
-                </div>
-                <div class="social-card">
-                    <i class="fab fa-weixin"></i>
-                    <h3>WeChat</h3>
-                    <p>seeailife</p>
-                </div>                
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-content">
-            <div class="ai-decoration-footer"></div>
-            <div class="visitor-stats">
-                <div class="stat-item">
-                    <span class="stat-label" data-i18n="stats.total">Total Visits</span>
-                    <span class="stat-value" id="totalVisits">-</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label" data-i18n="stats.today">Today</span>
-                    <span class="stat-value" id="todayVisits">-</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label" data-i18n="stats.month">This Month</span>
-                    <span class="stat-value" id="monthVisits">-</span>
-                </div>
-            </div>
-            <p>
-                <span data-i18n="footer.name">QiaoZhiShuo</span> © 2024 
-                <span data-i18n="footer.rights">All rights reserved.</span>
-            </p>
+    <section id="contact" class="section" style="background-image: url('images/contact-bg.jpg')">
+        <div class="section-content">
+            <h2 class="section-title" data-i18n="contact.title">Follow & Connect</h2>
             <div class="social-links">
                 <a href="https://github.com/qiaozhishuo" target="_blank" class="social-link" title="GitHub">
                     <i class="fab fa-github"></i>
@@ -198,6 +78,31 @@
                 </a>
             </div>
         </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="visitor-stats">
+                <div class="stat-item">
+                    <span class="stat-value" id="totalVisits">-</span>
+                    <span class="stat-label" data-i18n="stats.total">Total Visits</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="todayVisits">-</span>
+                    <span class="stat-label" data-i18n="stats.today">Today</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value" id="monthVisits">-</span>
+                    <span class="stat-label" data-i18n="stats.month">This Month</span>
+                </div>
+            </div>
+            <p>
+                <span data-i18n="footer.name">QiaoZhiShuo</span> © 2024 
+                <span data-i18n="footer.rights">All rights reserved.</span>
+            </p>
+        </div>
     </footer>
+
+    <script src="js/main.js"></script>
 </body>
 </html> 
