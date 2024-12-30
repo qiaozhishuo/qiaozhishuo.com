@@ -27,14 +27,19 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 
+                       "cdnjs.cloudflare.com", "cdn.jsdelivr.net"].filter(Boolean),
             styleSrc: ["'self'", "'unsafe-inline'", "cdnjs.cloudflare.com"],
             imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", "http://localhost:3000", "https://qiaozhishuo.com"],
+            connectSrc: ["'self'", 
+                        process.env.NODE_ENV === 'production' 
+                            ? process.env.ALLOWED_ORIGINS.split(',') 
+                            : "http://localhost:3000"],
             fontSrc: ["'self'", "cdnjs.cloudflare.com"],
             objectSrc: ["'none'"],
             mediaSrc: ["'self'"],
-            frameSrc: ["'none'"]
+            frameSrc: ["'none'"],
+            upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null
         }
     },
     crossOriginEmbedderPolicy: false,
@@ -43,19 +48,21 @@ app.use(helmet({
 
 // Rate limiting
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
+    message: { error: 'Too many requests, please try again later.' }
 });
 app.use(limiter);
 
 // CORS configuration
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://qiaozhishuo.com', 'https://www.qiaozhishuo.com']
+        ? process.env.ALLOWED_ORIGINS.split(',')
         : '*',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    credentials: true,
+    maxAge: 86400 // 24 hours
 };
 app.use(cors(corsOptions));
 

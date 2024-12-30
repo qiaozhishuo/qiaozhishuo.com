@@ -1,37 +1,50 @@
-# Dependencies
-node_modules/
-package-lock.json
+# Environment variables
+.env
+.env.*
+!.env.example
 
 # Logs
 logs/
 *.log
 npm-debug.log*
 
-# Environment variables
-.env
-.env.local
-.env.*.local
+# Runtime data
+data/
+*.pid
+*.seed
+*.pid.lock
 
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
+# Dependency directories
+node_modules/
 
-# OS files
-.DS_Store
-Thumbs.db
+# Optional npm cache directory
+.npm
 
-# Build output
+# Optional eslint cache
+.eslintcache
+
+# Production build
 dist/
 build/
 
-# Temporary files
-tmp/
-temp/
-
-# Security-related files
+# SSL/TLS certificates
 *.pem
 *.key
-*.cert
-*.crt 
+*.crt
+*.csr
+*.srl
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db 
