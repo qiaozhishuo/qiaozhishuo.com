@@ -1,20 +1,18 @@
 #!/bin/bash
 
-# Kill any process using port 3000
-kill_port() {
-    local port=$1
-    local pid=$(lsof -t -i:$port)
-    if [ ! -z "$pid" ]; then
-        echo "Killing process $pid using port $port"
-        kill -9 $pid
-    fi
-}
+# Kill all Node.js processes
+echo "Killing all Node.js processes..."
+pkill -f node || true
+sleep 2
 
 # Create logs directory if it doesn't exist
 mkdir -p logs
 
-# Kill process on port 3000 if it exists
-kill_port 3000
+# Make sure the port is actually free
+while lsof -i:3000 >/dev/null 2>&1; do
+    echo "Waiting for port 3000 to be free..."
+    sleep 1
+done
 
 # Start the server
 NODE_ENV=production node server.js 

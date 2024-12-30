@@ -1,3 +1,6 @@
+// Load environment variables from .env file
+require('dotenv').config();
+
 const express = require('express');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -22,6 +25,14 @@ const app = express();
 // Trust proxy - required for rate limiting behind reverse proxy
 app.set('trust proxy', 1);
 
+// Default allowed origins
+const defaultAllowedOrigins = ['http://localhost:3000'];
+
+// Parse allowed origins from environment variable or use default
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : defaultAllowedOrigins;
+
 // Security middleware
 app.use(helmet({
     contentSecurityPolicy: {
@@ -31,10 +42,7 @@ app.use(helmet({
                        "cdnjs.cloudflare.com", "cdn.jsdelivr.net"].filter(Boolean),
             styleSrc: ["'self'", "'unsafe-inline'", "cdnjs.cloudflare.com"],
             imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", 
-                        process.env.NODE_ENV === 'production' 
-                            ? process.env.ALLOWED_ORIGINS.split(',') 
-                            : "http://localhost:3000"],
+            connectSrc: ["'self'", ...allowedOrigins],
             fontSrc: ["'self'", "cdnjs.cloudflare.com"],
             objectSrc: ["'none'"],
             mediaSrc: ["'self'"],
@@ -46,18 +54,59 @@ app.use(helmet({
     crossOriginResourcePolicy: false
 }));
 
-// Rate limiting
+// Rate limiting configuration
 const limiter = rateLimit({
-    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
-    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
-    message: { error: 'Too many requests, please try again later.' }
+    windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
+    max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 500, // Increased from 100 to 500 requests per windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: 'Too many requests from this IP, please try again later.',
+    handler: (req, res) => {
+        logger.warn(`Rate limit exceeded for IP: ${req.ip}`);
+        res.status(429).json({
+            error: 'Too many requests, please try again later.'
+        });
+    }
 });
+
+// Apply rate limiting to all routes
 app.use(limiter);
+
+// Create a more lenient limiter for static content
+const staticLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 1000, // Allow more requests for static content
+    message: {
+        status: 429,
+        error: 'Too many requests',
+        message: 'Too many requests for static content, please try again in 15 minutes'
+    }
+});
+
+// Apply the more lenient limiter to static content
+app.use('/static', staticLimiter, express.static('public'));
+app.use('/images', staticLimiter, express.static('images'));
+app.use('/css', staticLimiter, express.static('css'));
+app.use('/js', staticLimiter, express.static('js'));
+
+// API specific rate limiter
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 300, // Specific limit for API endpoints
+    message: {
+        status: 429,
+        error: 'Too many API requests',
+        message: 'Too many API requests, please try again in 15 minutes'
+    }
+});
+
+// Apply API rate limiter to API routes
+app.use('/api', apiLimiter);
 
 // CORS configuration
 const corsOptions = {
     origin: process.env.NODE_ENV === 'production' 
-        ? process.env.ALLOWED_ORIGINS.split(',')
+        ? allowedOrigins
         : '*',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -184,8 +233,16 @@ app.get('/visitor-count', (req, res) => {
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-    logger.error('Unhandled error:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    if (err instanceof Error) {
+        if (err.name === 'RateLimitExceeded') {
+            return res.status(429).json({
+                status: 'error',
+                message: 'Rate limit exceeded. Please try again later.',
+                retryAfter: err.resetTime ? Math.ceil(err.resetTime / 1000 - Date.now() / 1000) : 900
+            });
+        }
+    }
+    next(err);
 });
 
 // Start server
